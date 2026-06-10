@@ -9,6 +9,7 @@
  * - run_terraform_apply: Run `terraform validate` followed by `terraform apply -auto-approve`
  * - run_terraform_destroy: Run `terraform validate` followed by `terraform destroy -auto-approve`
  * - run_terraform_init: Run `terraform init`
+ * - run_terragrunt_plan_all: Run `terragrunt run --all plan --parallelism 1`
  *
  * Usage:
  * 1. Save this file to .pi/extensions/coach-ai-terraform/index.ts (project-local)
@@ -716,6 +717,82 @@ export default function (pi: ExtensionAPI) {
           status: "destroy_failed",
           exitCode: destroyResult.code,
           output: destroyOutput,
+          workingDir,
+        },
+      };
+    },
+  });
+
+  pi.registerTool({
+    name: "run_terragrunt_plan_all",
+    label: "Run Terragrunt Plan All",
+    description:
+      "Run `terragrunt run --all plan --parallelism 1` across all modules in the project. " +
+      "This tool executes the command in the terragrunt working directory to plan infrastructure changes " +
+      "for all modules sequentially (parallelism 1).",
+    promptSnippet: "Run terragrunt run --all plan --parallelism 1",
+    promptGuidelines: [
+      "Use run_terragrunt_plan_all to plan changes across all terragrunt modules in the project.",
+    ],
+    parameters: Type.Object({
+      workingDir: Type.Optional(
+        Type.String({
+          description:
+            "Working directory containing the Terragrunt configuration. Defaults to the current directory.",
+        })
+      ),
+    }),
+
+    async execute(_toolCallId, params, signal, _onUpdate, ctx) {
+      const workingDir = params.workingDir ?? ctx.cwd;
+
+      const planResult = await pi.exec(
+        "terragrunt",
+        ["run", "--all", "plan", "--parallelism", "1"],
+        { signal, cwd: workingDir }
+      );
+
+      const planOutput = [
+        planResult.stdout ?? "",
+        planResult.stderr ?? "",
+      ]
+        .filter(Boolean)
+        .join("\n")
+        .trim();
+
+      if (planResult.code === 0) {
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                `✅ \`terragrunt run --all plan\` completed successfully.\n\n` +
+                `${planOutput || "(no changes to report)"}`,
+            },
+          ],
+          details: {
+            status: "success",
+            exitCode: planResult.code,
+            output: planOutput,
+            workingDir,
+          },
+        };
+      }
+
+      // Non-zero exit code - plan failed
+      return {
+        content: [
+          {
+            type: "text",
+            text:
+              `❌ \`terragrunt run --all plan\` failed (exit code ${planResult.code}).\n\n` +
+              `Output:\n${planOutput || "(no output)"}`,
+          },
+        ],
+        details: {
+          status: "plan_failed",
+          exitCode: planResult.code,
+          output: planOutput,
           workingDir,
         },
       };
