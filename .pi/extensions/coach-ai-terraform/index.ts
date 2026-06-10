@@ -7,8 +7,6 @@
  * - get_tg_version: Check if `terragrunt` is installed and report its version
  * - run_terraform_plan: Run `terraform validate` followed by `terraform plan`
  * - run_terraform_apply: Run `terraform validate` followed by `terraform apply -auto-approve`
- * - run_terraform_destroy: Run `terraform validate` followed by `terraform destroy -auto-approve`
- * - run_terraform_init: Run `terraform init`
  * - run_terragrunt_plan_all: Run `terragrunt run --all plan --parallelism 1`
  *
  * Usage:
@@ -299,7 +297,7 @@ export default function (pi: ExtensionAPI) {
         Type.String({
           description:
             "Working directory containing the Terraform configuration. Defaults to the current directory.",
-        })
+        }),
       ),
     }),
 
@@ -307,11 +305,10 @@ export default function (pi: ExtensionAPI) {
       const workingDir = params.workingDir ?? ctx.cwd;
 
       // Step 1: Run terraform validate
-      const validateResult = await pi.exec(
-        "terraform",
-        ["validate"],
-        { signal, cwd: workingDir }
-      );
+      const validateResult = await pi.exec("terraform", ["validate"], {
+        signal,
+        cwd: workingDir,
+      });
 
       const validateOutput = [
         validateResult.stdout ?? "",
@@ -341,16 +338,12 @@ export default function (pi: ExtensionAPI) {
       }
 
       // Step 2: Run terraform plan
-      const planResult = await pi.exec(
-        "terraform",
-        ["plan", "-input=false"],
-        { signal, cwd: workingDir }
-      );
+      const planResult = await pi.exec("terraform", ["plan", "-input=false"], {
+        signal,
+        cwd: workingDir,
+      });
 
-      const planOutput = [
-        planResult.stdout ?? "",
-        planResult.stderr ?? "",
-      ]
+      const planOutput = [planResult.stdout ?? "", planResult.stderr ?? ""]
         .filter(Boolean)
         .join("\n")
         .trim();
@@ -435,7 +428,7 @@ export default function (pi: ExtensionAPI) {
         Type.String({
           description:
             "Working directory containing the Terraform configuration. Defaults to the current directory.",
-        })
+        }),
       ),
     }),
 
@@ -443,11 +436,10 @@ export default function (pi: ExtensionAPI) {
       const workingDir = params.workingDir ?? ctx.cwd;
 
       // Step 1: Run terraform validate
-      const validateResult = await pi.exec(
-        "terraform",
-        ["validate"],
-        { signal, cwd: workingDir }
-      );
+      const validateResult = await pi.exec("terraform", ["validate"], {
+        signal,
+        cwd: workingDir,
+      });
 
       const validateOutput = [
         validateResult.stdout ?? "",
@@ -480,13 +472,10 @@ export default function (pi: ExtensionAPI) {
       const applyResult = await pi.exec(
         "terraform",
         ["apply", "-auto-approve"],
-        { signal, cwd: workingDir }
+        { signal, cwd: workingDir },
       );
 
-      const applyOutput = [
-        applyResult.stdout ?? "",
-        applyResult.stderr ?? "",
-      ]
+      const applyOutput = [applyResult.stdout ?? "", applyResult.stderr ?? ""]
         .filter(Boolean)
         .join("\n")
         .trim();
@@ -533,197 +522,6 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.registerTool({
-    name: "run_terraform_init",
-    label: "Run Terraform Init",
-    description:
-      "Run `terraform init` to initialize a working directory containing Terraform configuration. " +
-      "This tool downloads the necessary provider plugins and initializes the backend. " +
-      "Use this before running plan or apply if the environment hasn't been initialized yet.",
-    promptSnippet: "Run terraform init to initialize the Terraform working directory",
-    promptGuidelines: [
-      "Use run_terraform_init to initialize the Terraform working directory before running plan or apply.",
-    ],
-    parameters: Type.Object({
-      workingDir: Type.Optional(
-        Type.String({
-          description:
-            "Working directory containing the Terraform configuration. Defaults to the current directory.",
-        })
-      ),
-    }),
-
-    async execute(_toolCallId, params, signal, _onUpdate, ctx) {
-      const workingDir = params.workingDir ?? ctx.cwd;
-
-      const initResult = await pi.exec(
-        "terraform",
-        ["init"],
-        { signal, cwd: workingDir }
-      );
-
-      const initOutput = [
-        initResult.stdout ?? "",
-        initResult.stderr ?? "",
-      ]
-        .filter(Boolean)
-        .join("\n")
-        .trim();
-
-      if (initResult.code === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text:
-                `✅ \`terraform init\` completed successfully.\n\n` +
-                `${initOutput || "(no output)"}`,
-            },
-          ],
-          details: {
-            status: "success",
-            exitCode: initResult.code,
-            output: initOutput,
-            workingDir,
-          },
-        };
-      }
-
-      // Error code - init failed
-      return {
-        content: [
-          {
-            type: "text",
-            text:
-              `❌ \`terraform init\` failed (exit code ${initResult.code}).\n\n` +
-              `Output:\n${initOutput || "(no output)"}`,
-          },
-        ],
-        details: {
-          status: "init_failed",
-          exitCode: initResult.code,
-          output: initOutput,
-          workingDir,
-        },
-      };
-    },
-  });
-
-  pi.registerTool({
-    name: "run_terraform_destroy",
-    label: "Run Terraform Destroy",
-    description:
-      "Run `terraform validate` first, and if validation passes, then run `terraform destroy -auto-approve`. " +
-      "This tool executes both commands sequentially in the terraform working directory. " +
-      "If validation fails, the destroy is not run and the validation errors are returned. " +
-      "This will destroy infrastructure resources without prompting for confirmation.",
-    promptSnippet: "Run terraform validate then terraform destroy -auto-approve",
-    promptGuidelines: [
-      "Use run_terraform_destroy to tear down infrastructure resources. Always review the plan first.",
-      "Always run run_terraform_plan first to preview what will be destroyed before applying.",
-    ],
-    parameters: Type.Object({
-      workingDir: Type.Optional(
-        Type.String({
-          description:
-            "Working directory containing the Terraform configuration. Defaults to the current directory.",
-        })
-      ),
-    }),
-
-    async execute(_toolCallId, params, signal, _onUpdate, ctx) {
-      const workingDir = params.workingDir ?? ctx.cwd;
-
-      // Step 1: Run terraform validate
-      const validateResult = await pi.exec(
-        "terraform",
-        ["validate"],
-        { signal, cwd: workingDir }
-      );
-
-      const validateOutput = [
-        validateResult.stdout ?? "",
-        validateResult.stderr ?? "",
-      ]
-        .filter(Boolean)
-        .join("\n")
-        .trim();
-
-      if (validateResult.code !== 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text:
-                `❌ \`terraform validate\` failed (exit code ${validateResult.code}).\nDestroy was not run.\n\n` +
-                `Output:\n${validateOutput || "(no output)"}`,
-            },
-          ],
-          details: {
-            status: "validation_failed",
-            exitCode: validateResult.code,
-            output: validateOutput,
-            workingDir,
-          },
-        };
-      }
-
-      // Step 2: Run terraform destroy -auto-approve
-      const destroyResult = await pi.exec(
-        "terraform",
-        ["destroy", "-auto-approve"],
-        { signal, cwd: workingDir }
-      );
-
-      const destroyOutput = [
-        destroyResult.stdout ?? "",
-        destroyResult.stderr ?? "",
-      ]
-        .filter(Boolean)
-        .join("\n")
-        .trim();
-
-      if (destroyResult.code === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text:
-                `✅ \`terraform validate\` passed.\n` +
-                `✅ \`terraform destroy\` completed successfully. All resources have been destroyed.\n\n` +
-                `${destroyOutput || "(no resources to destroy)"}`,
-            },
-          ],
-          details: {
-            status: "success",
-            exitCode: destroyResult.code,
-            output: destroyOutput,
-            workingDir,
-          },
-        };
-      }
-
-      // Error code - destroy failed
-      return {
-        content: [
-          {
-            type: "text",
-            text:
-              `✅ \`terraform validate\` passed.\n` +
-              `❌ \`terraform destroy\` failed (exit code ${destroyResult.code}).\n\n` +
-              `Output:\n${destroyOutput || "(no output)"}`,
-          },
-        ],
-        details: {
-          status: "destroy_failed",
-          exitCode: destroyResult.code,
-          output: destroyOutput,
-          workingDir,
-        },
-      };
-    },
-  });
-
-  pi.registerTool({
     name: "run_terragrunt_plan_all",
     label: "Run Terragrunt Plan All",
     description:
@@ -739,7 +537,7 @@ export default function (pi: ExtensionAPI) {
         Type.String({
           description:
             "Working directory containing the Terragrunt configuration. Defaults to the current directory.",
-        })
+        }),
       ),
     }),
 
@@ -749,13 +547,10 @@ export default function (pi: ExtensionAPI) {
       const planResult = await pi.exec(
         "terragrunt",
         ["run", "--all", "plan", "--parallelism", "1"],
-        { signal, cwd: workingDir }
+        { signal, cwd: workingDir },
       );
 
-      const planOutput = [
-        planResult.stdout ?? "",
-        planResult.stderr ?? "",
-      ]
+      const planOutput = [planResult.stdout ?? "", planResult.stderr ?? ""]
         .filter(Boolean)
         .join("\n")
         .trim();
