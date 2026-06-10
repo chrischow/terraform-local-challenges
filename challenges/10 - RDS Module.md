@@ -15,8 +15,7 @@
 6. Add a `module` block in `./infra/main.tf` to instantiate an RDS module. Use `db` for the `name`, `stg` for the `environment`, and reference the VPC module's `vpc_id` output for `vpc_id`.
 7. Run `terraform init` to register the module
 8. Run `terraform plan` to inspect the generated resource changes
-9. Run `terraform apply` and verify the RDS file is created
-10. Run `terraform output` to check the outputs
+9. Run `terraform apply` and verify that (a) the RDS file is created, and (b) the outputs contain `rds_cluster_id`
 
 #### Checks
 - [ ] `./infra/modules/rds/main.tf`, `./infra/modules/rds/variables.tf`, and `./infra/modules/rds/outputs.tf` exist

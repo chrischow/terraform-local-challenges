@@ -16,8 +16,7 @@
 6. Add a `module` block in `./infra/main.tf` to instantiate an ECS module. Use `web` for the `name`, `stg` for the `environment`, and reference the RDS module's `rds_cluster_id` output and the VPC module's `vpc_id` output.
 7. Run `terraform init` to register the module
 8. Run `terraform plan` to inspect the generated resource changes
-9. Run `terraform apply` and verify the ECS file is created
-10. Run `terraform output` to check the outputs
+9. Run `terraform apply` and verify that (a) the ECS file is created and (b) the outputs contain `ecs_id`
 
 #### Checks
 - [ ] `./infra/modules/ecs/main.tf`, `./infra/modules/ecs/variables.tf`, and `./infra/modules/ecs/outputs.tf` exist

@@ -18,8 +18,7 @@
 8.  Add a `module` block in `./infra/main.tf` to instantiate a VPC module. Use `main` for the `name` and `stg` for the `environment`.
 9.  Run `terraform init` to register the module
 10. Run `terraform plan` to inspect the generated resource changes
-11. Run `terraform apply` and verify the VPC file is created
-12. Run `terraform output` to check the outputs
+11. Run `terraform apply` and verify that (a) the VPC file is created, and (b) the outputs contain `vpc_id` and `cidr_block`
 
 #### Checks
 - [ ] `./infra/modules/vpc/main.tf`, `./infra/modules/vpc/variables.tf`, and `./infra/modules/vpc/outputs.tf` exist

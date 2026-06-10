@@ -150,8 +150,7 @@
 8.  Add a `module` block in `./infra/main.tf` to instantiate a VPC module. Use `main` for the `name` and `stg` for the `environment`.
 9.  Run `terraform init` to register the module
 10. Run `terraform plan` to inspect the generated resource changes
-11. Run `terraform apply` and verify the VPC file is created
-12. Run `terraform output` to check the outputs
+11. Run `terraform apply` and verify that (a) the VPC file is created, and (b) the outputs contain `vpc_id` and `cidr_block`
 
 #### Checks
 - [ ] `./infra/modules/vpc/main.tf`, `./infra/modules/vpc/variables.tf`, and `./infra/modules/vpc/outputs.tf` exist
@@ -186,8 +185,7 @@ cidr_block: 10.0.0.0/16
 6. Add a `module` block in `./infra/main.tf` to instantiate an RDS module. Use `db` for the `name`, `stg` for the `environment`, and reference the VPC module's `vpc_id` output for `vpc_id`.
 7. Run `terraform init` to register the module
 8. Run `terraform plan` to inspect the generated resource changes
-9. Run `terraform apply` and verify the RDS file is created
-10. Run `terraform output` to check the outputs
+9. Run `terraform apply` and verify that (a) the RDS file is created, and (b) the outputs contain `rds_cluster_id`
 
 #### Checks
 - [ ] `./infra/modules/rds/main.tf`, `./infra/modules/rds/variables.tf`, and `./infra/modules/rds/outputs.tf` exist
@@ -222,8 +220,7 @@ vpc_id: stg-vpc-main
 6. Add a `module` block in `./infra/main.tf` to instantiate an ECS module. Use `web` for the `name`, `stg` for the `environment`, and reference the RDS module's `rds_cluster_id` output and the VPC module's `vpc_id` output.
 7. Run `terraform init` to register the module
 8. Run `terraform plan` to inspect the generated resource changes
-9. Run `terraform apply` and verify the ECS file is created
-10. Run `terraform output` to check the outputs
+9. Run `terraform apply` and verify that (a) the ECS file is created and (b) the outputs contain `ecs_id`
 
 #### Checks
 - [ ] `./infra/modules/ecs/main.tf`, `./infra/modules/ecs/variables.tf`, and `./infra/modules/ecs/outputs.tf` exist
