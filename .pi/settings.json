@@ -1,0 +1,36 @@
+{
+  "packages": [
+    "npm:@plannotator/pi-extension"
+  ],
+  "lockdown": {
+    "protectedPatterns": [
+      "**/.env*",
+      "**/.git/**",
+      "**/node_modules/**"
+    ],
+    "external": {
+      "protected": {
+        "read": "block",
+        "edit": "block",
+        "write": "block"
+      },
+      "unprotected": {
+        "read": "allow",
+        "edit": "block",
+        "write": "block"
+      }
+    },
+    "internal": {
+      "protected": {
+        "read": "warn",
+        "edit": "warn",
+        "write": "warn"
+      },
+      "unprotected": {
+        "read": "allow",
+        "edit": "warn",
+        "write": "warn"
+      }
+    }
+  }
+}
