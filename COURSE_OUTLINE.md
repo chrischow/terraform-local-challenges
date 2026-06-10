@@ -295,8 +295,6 @@ The team is now moving into production, which means managing both a staging (`st
 #### Checks
 - [ ] `./infra/states/` contains only `stg` and `prod` folders (plus `modules`)
 - [ ] Each environment folder (`stg` and `prod`) contains `vpc`, `rds`, and `ecs` subdirectories
-- [ ] `./infra/states/stg/env.hcl` defines `environment = "stg"`
-- [ ] `./infra/states/prod/env.hcl` defines `environment = "prod"`
 - [ ] Each service's `main.tf` has the correct module `source` path
 - [ ] `terraform plan` runs successfully in all service folders for both environments with no pending changes
 
