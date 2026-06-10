@@ -46,6 +46,7 @@ export default function (pi: ExtensionAPI) {
       "run_terraform_apply",
       "run_terraform_destroy",
       "run_terraform_init",
+      "run_terragrunt_plan_all",
     ]);
 
     // Get settings
