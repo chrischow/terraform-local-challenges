@@ -14,11 +14,11 @@ The team is now moving into production, which means managing both a staging (`st
 4. Move all of the resource folders (i.e. `vpc`, `rds`, `ecs`) into `./infra/states/stg`
 5. Copy `./infra/states/stg` to a new folder `./infra/states/prod`
 6. Change the `environment` variable in each prod service to `"prod"`
-7. Update the `source` for all services' `main.tf` file to the correct filepath. 2 more `../` should be prepended since we are adding 2 layers of nesting.
+7. Update the `source` for all services' `main.tf` file to the correct filepath, since these `main.tf` files now have 3 levels of nesting relative to `./infra/modules`. For example, the source for `./infra/states/stg/vpc` should be `../../../modules/vpc`.
 8. Provision all resources in both staging and production:
    1. Run `terraform init` in each folder to register the modules
    2. Run `terraform plan` in each folder to inspect changes
-   3. Run `terraform plan` in each folder to verify the configuration
+   3. Run `terraform apply` in each folder to apply the configuration
 9.  Remove any files or folders in `./infra` that is not `./infra/states` or `./infra/modules`
 
 #### Checks
