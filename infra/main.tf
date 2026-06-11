@@ -22,9 +22,19 @@ variable "file_count" {
   default     = 3
 }
 
+variable "isProduction" {
+  description = "Whether this is a production environment"
+  type        = bool
+  default     = false
+}
+
+locals {
+  environment_tag = var.isProduction ? "prod" : "dev"
+}
+
 resource "local_file" "foo" {
   filename = var.filename
-  content  = var.content
+  content  = "${var.content}-${local.environment_tag}"
 }
 
 resource "local_file" "each" {
