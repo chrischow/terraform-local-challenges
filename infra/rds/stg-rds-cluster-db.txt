@@ -1,2 +1,0 @@
-id: stg-rds-cluster-db
-vpc_id: stg-vpc-main
