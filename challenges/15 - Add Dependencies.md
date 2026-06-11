@@ -11,6 +11,8 @@ In the previous challenge, RDS and ECS hard-coded dependency IDs (e.g., `vpc_id`
 #### Checks
 - [ ] `./infra/states/stg/rds/terragrunt.hcl` contains a `dependency "vpc"` block
 - [ ] `./infra/states/stg/ecs/terragrunt.hcl` contains `dependency` blocks for both VPC and RDS
+- [ ] `./infra/states/prod/rds/terragrunt.hcl` contains a `dependency "vpc"` block
+- [ ] `./infra/states/prod/ecs/terragrunt.hcl` contains `dependency` blocks for both VPC and RDS
 - [ ] Dependency outputs are used as inputs (not hard-coded values)
 - [ ] `terragrunt run --all plan` runs successfully in both staging and prod
 
@@ -23,6 +25,10 @@ For the RDS service (`./infra/states/stg/rds/terragrunt.hcl`), add a `dependency
 
 dependency "vpc" {
   config_path = "../vpc"
+
+  mock_outputs = {
+    vpc_id = "mock-vpc-id"
+  }
 }
 
 inputs = {
