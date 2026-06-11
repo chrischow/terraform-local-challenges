@@ -10,9 +10,21 @@ variable "content" {
   default     = "bar"
 }
 
+variable "files" {
+  description = "A map of filenames to their content"
+  type        = map(string)
+  default     = {}
+}
+
 resource "local_file" "foo" {
   filename = var.filename
   content  = var.content
+}
+
+resource "local_file" "each" {
+  for_each = var.files
+  filename = each.key
+  content  = each.value
 }
 
 output "filename" {
