@@ -11,3 +11,11 @@ module "rds" {
   environment = "stg"
   vpc_id      = module.vpc.vpc_id
 }
+
+module "ecs" {
+  source           = "./modules/ecs"
+  name             = "web"
+  environment      = "stg"
+  rds_cluster_id  = module.rds.rds_cluster_id
+  vpc_id          = module.vpc.vpc_id
+}
