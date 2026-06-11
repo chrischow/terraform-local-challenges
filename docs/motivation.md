@@ -9,6 +9,6 @@ I did not have much knowledge of cloud at the time, but had to provision resourc
 I also sidetracked frequently to understand parameters for services like EC2 and ALB while running through the training material ([Yevgeniy Bikman's Terraform Up & Running](https://www.terraformupandrunning.com/)). This was to make sure I knew what I was provisioning, and also to figure out if those were Terraform things or AWS things.
 
 ## A Solution
-I wished there a way to decouple the learning of Terraform/Terragrunt from the learning of cloud.
+I wished there was a way to decouple the learning of Terraform/Terragrunt from the learning of cloud.
 
 This repo is my attempt to make it easier for my teams to learn.
