@@ -1,8 +1,18 @@
 {
   "packages": [
-    "npm:@plannotator/pi-extension"
+    "npm:@plannotator/pi-extension",
+    "npm:@chrischow/pi-lockdown"
   ],
   "lockdown": {
+    "customTools": [
+      "get_tenv_version",
+      "get_tf_version",
+      "get_tg_version",
+      "run_terraform_init",
+      "run_terraform_plan",
+      "run_terraform_apply",
+      "run_terragrunt_plan_all"
+    ],
     "protectedPatterns": [
       "**/.env*",
       "**/.git/**",
@@ -12,24 +22,28 @@
       "protected": {
         "read": "block",
         "edit": "block",
-        "write": "block"
+        "write": "block",
+        "other": "block"
       },
       "unprotected": {
         "read": "allow",
         "edit": "block",
-        "write": "block"
+        "write": "block",
+        "other": "block"
       }
     },
     "internal": {
       "protected": {
         "read": "warn",
         "edit": "warn",
-        "write": "warn"
+        "write": "warn",
+        "other": "warn"
       },
       "unprotected": {
         "read": "allow",
         "edit": "warn",
-        "write": "warn"
+        "write": "warn",
+        "other": "warn"
       }
     }
   }
