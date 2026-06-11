@@ -10,8 +10,16 @@ terraform {
   source = "../../../modules/rds"
 }
 
+dependency "vpc" {
+  config_path = "../vpc"
+
+  mock_outputs = {
+    vpc_id = "mock-vpc-id"
+  }
+}
+
 inputs = {
   name        = "main"
   environment = local.env_vars.locals.environment
-  vpc_id      = "stg-vpc-main"
+  vpc_id      = dependency.vpc.outputs.vpc_id
 }
