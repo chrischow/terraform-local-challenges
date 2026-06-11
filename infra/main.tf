@@ -16,6 +16,12 @@ variable "files" {
   default     = {}
 }
 
+variable "file_count" {
+  description = "The number of files to create using count"
+  type        = number
+  default     = 3
+}
+
 resource "local_file" "foo" {
   filename = var.filename
   content  = var.content
@@ -25,6 +31,12 @@ resource "local_file" "each" {
   for_each = var.files
   filename = each.key
   content  = each.value
+}
+
+resource "local_file" "count" {
+  count    = var.file_count
+  filename = "count-file-${count.index}.txt"
+  content  = "Content of file ${count.index}"
 }
 
 output "filename" {
