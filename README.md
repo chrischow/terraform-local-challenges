@@ -9,13 +9,13 @@
 
 ## Design Philosophy
 
-- **No cloud required.** Everything uses `local_file` as the "resource" so learners can run `terraform apply` instantly.
-- **Loosely inspired by AWS.** Resource names _resemble_ real AWS resources (`s3_bucket_config`, `ec2_instance_metadata`, `iam_role_policy`). File contents describe basic properties of those services. This builds familiarity with common cloud resource patterns without needing an actual AWS account.
-- **Builds incrementally.** Each challenge introduces one or two new concepts. Learners always start from the previous challenge's solution.
-- **Self-grading via an AI agent.** After the learner finishes a challenge, they invoke a Pi extension (or use a Pi session) that inspects the working directory, parses the `.tf` files and `.tfstate`, and provides structured feedback / a pass/fail grade.
+- **No cloud required.** Everything uses `local_file` as the "resource" so you can run `terraform` commands without fear of affecting any cloud resources.
+- **Builds incrementally.** Each challenge introduces one or two new concepts. You'll always start from the previous challenge's solution.
+- **(Optional) AI grading.** If you have set up [Pi](https://pi.dev/), after you're done with a challenge, start a new `pi` session in the root of this repo, and ask the agent to `grade` your work. You have to specify the challenge number. For example: `I have completed challenge 12. Please grade it.`
 
 ## Challenge Instructions
 
 1. Make all changes in the `./infra` folder.
-1. Commit changes after completing each challenge (e.g. `feat: challenge 01`).
-1. Ignore the files created by Terraform (e.g. `*.txt` from `local_file` resources, `.terraform/`, `.terraform.tfstate`, `.terraform.tfstate.backup`, `*.tfplan`). They are generated artifacts, not part of the curriculum.
+2. Commit changes after completing each challenge (e.g. `feat: challenge 01`).
+3. Ignore the files created by Terraform (e.g. `*.txt` from `local_file` resources, `.terraform/`, `.terraform.tfstate`, `.terraform.tfstate.backup`, `*.tfplan`). They are generated artifacts, not part of the curriculum.
+4. If you're stuck at a challenge, you may reference the appropriate commit in the `feat/solution` branch.
