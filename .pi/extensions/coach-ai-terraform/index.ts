@@ -5,6 +5,7 @@
  * - get_tenv_version: Check if `tenv` is installed and report its version
  * - get_tf_version: Check if `terraform` is installed and report its version
  * - get_tg_version: Check if `terragrunt` is installed and report its version
+ * - run_terraform_init: Run `terraform init`
  * - run_terraform_plan: Run `terraform validate` followed by `terraform plan`
  * - run_terraform_apply: Run `terraform validate` followed by `terraform apply -auto-approve`
  * - run_terragrunt_plan_all: Run `terragrunt run --all plan --parallelism 1`
@@ -588,6 +589,79 @@ export default function (pi: ExtensionAPI) {
           status: "plan_failed",
           exitCode: planResult.code,
           output: planOutput,
+          workingDir,
+        },
+      };
+    },
+  });
+
+  pi.registerTool({
+    name: "run_terraform_init",
+    label: "Run Terraform Init",
+    description:
+      "Run `terraform init` to initialize the working directory. " +
+      "This downloads providers, installs plugins, and sets up the backend " +
+      "for the Terraform working directory. It should be run before any other " +
+      "Terraform commands.",
+    promptSnippet: "Run terraform init",
+    promptGuidelines: [
+      "Use run_terraform_init before running terraform plan, apply, or other commands.",
+    ],
+    parameters: Type.Object({
+      workingDir: Type.Optional(
+        Type.String({
+          description:
+            "Working directory containing the Terraform configuration. Defaults to the current directory.",
+        }),
+      ),
+    }),
+
+    async execute(_toolCallId, params, signal, _onUpdate, ctx) {
+      const workingDir = params.workingDir ?? ctx.cwd;
+
+      const initResult = await pi.exec("terraform", ["init"], {
+        signal,
+        cwd: workingDir,
+      });
+
+      const initOutput = [initResult.stdout ?? "", initResult.stderr ?? ""]
+        .filter(Boolean)
+        .join("\n")
+        .trim();
+
+      if (initResult.code === 0) {
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                `✅ \`terraform init\` completed successfully.\n\n` +
+                `${initOutput || "(no output)"}`,
+            },
+          ],
+          details: {
+            status: "success",
+            exitCode: initResult.code,
+            output: initOutput,
+            workingDir,
+          },
+        };
+      }
+
+      // Non-zero exit code - init failed
+      return {
+        content: [
+          {
+            type: "text",
+            text:
+              `❌ \`terraform init\` failed (exit code ${initResult.code}).\n\n` +
+              `Output:\n${initOutput || "(no output)"}`,
+          },
+        ],
+        details: {
+          status: "init_failed",
+          exitCode: initResult.code,
+          output: initOutput,
           workingDir,
         },
       };
