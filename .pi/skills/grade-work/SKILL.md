@@ -40,7 +40,7 @@ Run `grade-work <challenge_number>` where challenge number is `01` through `15`.
    - Use `run_terraform_init` when the check involves running `terraform init` - it downloads providers and initializes the backend.
    - Use `run_terraform_plan` when the check involves running `terraform plan` — it validates then plans in `./infra/` (or the relevant subdirectory).
    - Use `run_terraform_apply` when the check involves running `terraform apply` or checking outputs — it validates then applies.
-   - For Terragrunt challenges (14–15), use `run_terragrunt_plan_all` to run `terragrunt plan-all` in both `./infra/states/stg` and `./infra/states/prod`.
+   - For Terragrunt challenges (14–15), use `run_terragrunt_plan_all` to run `terragrunt run --all plan` in both `./infra/states/stg` and `./infra/states/prod`.
 
 5. **Report results** using the output format below.
 
