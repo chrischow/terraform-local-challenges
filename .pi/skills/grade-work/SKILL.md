@@ -37,6 +37,7 @@ Run `grade-work <challenge_number>` where challenge number is `01` through `15`.
 4. **Grade each check** by inspecting `./infra/` and running commands as needed:
    - Use `read` to inspect `.tf` files, `.tfvars`, `.hcl` files, and resource output files.
    - Use `get_tenv_version`, `get_tf_version`, `get_tg_version` for tool installation checks.
+   - Use `run_terraform_init` when the check involves running `terraform init` - it downloads providers and initializes the backend.
    - Use `run_terraform_plan` when the check involves running `terraform plan` — it validates then plans in `./infra/` (or the relevant subdirectory).
    - Use `run_terraform_apply` when the check involves running `terraform apply` or checking outputs — it validates then applies.
    - For Terragrunt challenges (14–15), use `run_terragrunt_plan_all` to run `terragrunt plan-all` in both `./infra/states/stg` and `./infra/states/prod`.
