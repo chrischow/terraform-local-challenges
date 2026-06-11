@@ -13,7 +13,7 @@ Run `grade-work <challenge_number>` where challenge number is `01` through `15`.
 
 ## Workflow
 
-1. **Identify the challenge file.** Normalize the input: if the challenge number is a single digit (`1`–`9`), prepend `0` to get `01`–`09`. Then map to the corresponding file in `./challenges/`:
+1. **Identify the challenge file.** Normalize the input: if the challenge number is a single digit (`1`–`9`), prepend `0` to get `01`–`09`. Then map to the corresponding file in `../../../challenges/`:
    - `01` → `01 - Environment Setup.md`
    - `02` → `02 - Setting up the Provider.md`
    - `03` → `03 - First Resource Block.md`
